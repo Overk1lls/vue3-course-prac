@@ -4,22 +4,22 @@
     <router-link to="/about">About</router-link>
   </nav>
   <router-view /> -->
-  <div>
-    <form @submit.prevent>
-      <h4>Create a post</h4>
-      <input v-model="title" class="input" type="text" name="" id="" placeholder="Title">
-      <input v-model="body" class="input" type="text" name="" id="" placeholder="Description">
-      <button class="btn" @click="createPost"></button>
-    </form>
-    <div class="post" v-for="post in posts" v-bind:key="post.id">
-      <div><strong>Название: </strong>{{ post.title }}</div>
-      <div><strong>Описание: </strong>{{ post.body }}</div>
-    </div>
+  <div class="app">
+    <PostForm @create="createPost" />
+    <PostList :posts="posts" />
   </div>
 </template>
 
 <script lang="ts">
+import PostForm from '@/components/PostForm.vue';
+import PostList from '@/components/PostList.vue';
+import { Post } from './models';
+
 export default {
+  components: {
+    PostForm,
+    PostList,
+  },
   data() {
     return {
       posts: [
@@ -33,18 +33,11 @@ export default {
           title: 'TypeScript',
           body: 'TypeScript info',
         },
-      ],
-      title: '',
-      body: '',
+      ] as Post[],
     };
   },
   methods: {
-    createPost() {
-      const post = {
-        id: Date.now(),
-        title: this.title,
-        body: this.body,
-      };
+    createPost(post: Post) {
       this.posts.push(post);
     },
   },
