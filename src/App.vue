@@ -6,16 +6,17 @@
   <router-view /> -->
   <div class="app">
     <PostForm @create="createPost" />
-    <PostList :posts="posts" />
+    <PostList @delete="deletePost" :posts="posts" />
   </div>
 </template>
 
 <script lang="ts">
 import PostForm from '@/components/PostForm.vue';
 import PostList from '@/components/PostList.vue';
+import { defineComponent } from 'vue';
 import { Post } from './models';
 
-export default {
+export default defineComponent({
   components: {
     PostForm,
     PostList,
@@ -40,8 +41,11 @@ export default {
     createPost(post: Post) {
       this.posts.push(post);
     },
+    deletePost(i: number) {
+      this.posts.splice(i, 1);
+    },
   },
-};
+});
 </script>
 
 <style>

@@ -4,13 +4,29 @@
     <div><strong>Описание: </strong>{{ props.post.body }}</div>
   </div>
   <div>
-    <MyButton class="btn">Delete</MyButton>
+    <MyButton @click="deletePost">Delete</MyButton>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import MyButton from './MyButton.vue';
-import { Post } from '../models';
+import { defineComponent, PropType } from 'vue';
 
-const props = defineProps<{ post: Post }>();
+export default defineComponent({
+  components: {
+    MyButton,
+  },
+  props: {
+    post: {
+      type: Object as PropType<Post>,
+      required: true,
+    },
+  },
+  emits: ['delete'],
+  methods: {
+    deletePost() {
+      this.$emit('delete', this.post);
+    }
+  },
+});
 </script>

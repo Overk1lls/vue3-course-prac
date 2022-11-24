@@ -4,7 +4,7 @@
       <h4>Create a post</h4>
       <input v-model="post.title" class="input" type="text" name="" id="" placeholder="Title">
       <input v-model="post.body" class="input" type="text" name="" id="" placeholder="Description">
-      <MyButton class="btn" @click="createPost">Add</MyButton>
+      <MyButton @click="createPost">Add</MyButton>
     </form>
   </div>
 </template>
