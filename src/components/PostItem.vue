@@ -1,7 +1,7 @@
 <template>
   <div class="post">
-    <div><strong>Название: </strong>{{ props.post.title }}</div>
-    <div><strong>Описание: </strong>{{ props.post.body }}</div>
+    <div><strong>Title: </strong>{{ post.title }}</div>
+    <div><strong>Description: </strong>{{ post.body }}</div>
   </div>
   <div>
     <MyButton @click="deletePost">Delete</MyButton>
@@ -9,8 +9,9 @@
 </template>
 
 <script lang="ts">
-import MyButton from './MyButton.vue';
-import { defineComponent, PropType } from 'vue';
+import MyButton from "@/components/MyButton.vue";
+import { Post } from "@/models";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   components: {
@@ -22,11 +23,11 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['delete'],
+  emits: ["delete"],
   methods: {
     deletePost() {
-      this.$emit('delete', this.post);
-    }
+      this.$emit("delete", this.post);
+    },
   },
 });
 </script>

@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts">
-import PostForm from '@/components/PostForm.vue';
-import PostList from '@/components/PostList.vue';
-import { defineComponent } from 'vue';
-import { Post } from './models';
+import PostForm from "@/components/PostForm.vue";
+import PostList from "@/components/PostList.vue";
+import { defineComponent } from "vue";
+import { Post } from "@/models";
 
 export default defineComponent({
   components: {
@@ -26,13 +26,13 @@ export default defineComponent({
       posts: [
         {
           id: 1,
-          title: 'JavaScript',
-          body: 'JavaScript info',
+          title: "JavaScript",
+          body: "JavaScript info",
         },
         {
           id: 2,
-          title: 'TypeScript',
-          body: 'TypeScript info',
+          title: "TypeScript",
+          body: "TypeScript info",
         },
       ] as Post[],
     };
