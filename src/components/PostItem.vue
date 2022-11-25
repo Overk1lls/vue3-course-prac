@@ -1,10 +1,12 @@
 <template>
-  <div class="post">
-    <div><strong>Title: </strong>{{ post.title }}</div>
-    <div><strong>Description: </strong>{{ post.body }}</div>
-  </div>
   <div>
-    <MyButton @click="deletePost">Delete</MyButton>
+    <div class="post">
+      <div><strong>Title: </strong>{{ post.title }}</div>
+      <div><strong>Description: </strong>{{ post.body }}</div>
+    </div>
+    <div>
+      <MyButton @click="deletePost">Delete</MyButton>
+    </div>
   </div>
 </template>
 
