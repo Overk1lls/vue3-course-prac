@@ -6,11 +6,18 @@
   <router-view /> -->
   <div class="app">
     <h1>Posts Page</h1>
-    <MyButton @click="showModal">Create a post</MyButton>
+    <div class="app-btn">
+      <MyButton @click="showModal">Create a post</MyButton>
+      <MySelector v-model="selectedSort" :options="sortOptions" />
+    </div>
     <MyModal v-model:isVisible="isModalVisible">
       <PostForm @create="createPost" />
     </MyModal>
-    <PostList v-if="!isPostsLoading" @delete="deletePost" :posts="posts" />
+    <PostList
+      v-if="!isPostsLoading"
+      @delete="deletePost"
+      :posts="sortedPosts"
+    />
     <div v-else style="color: cornflowerblue">Loading...</div>
   </div>
 </template>
@@ -20,7 +27,7 @@ import axios from "axios";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import { defineComponent } from "vue";
-import { Post } from "@/models";
+import { Options, Post } from "@/models";
 
 export default defineComponent({
   components: {
@@ -32,6 +39,21 @@ export default defineComponent({
       posts: [] as Post[],
       isModalVisible: false,
       isPostsLoading: true,
+      selectedSort: "title" as keyof Post,
+      sortOptions: [
+        {
+          value: "id",
+          name: "By its ID",
+        },
+        {
+          value: "title",
+          name: "By title",
+        },
+        {
+          value: "body",
+          name: "By description",
+        },
+      ] as Options[],
     };
   },
   methods: {
@@ -49,13 +71,11 @@ export default defineComponent({
       try {
         this.isPostsLoading = true;
 
-        setTimeout(async () => {
-          const { data } = await axios.get<Post[]>(
-            "https://jsonplaceholder.typicode.com/posts?_limit=10"
-          );
+        const { data } = await axios.get<Post[]>(
+          "https://jsonplaceholder.typicode.com/posts?_limit=10"
+        );
 
-          this.posts = data;
-        }, 1500);
+        this.posts = data;
       } catch (error) {
         alert("An error occurred");
       } finally {
@@ -65,6 +85,15 @@ export default defineComponent({
   },
   mounted() {
     this.fetchPosts();
+  },
+  computed: {
+    sortedPosts(): Post[] {
+      return [...this.posts].sort((a, b) => {
+        return a[this.selectedSort]
+          .toString()
+          .localeCompare(b[this.selectedSort].toString());
+      });
+    },
   },
 });
 </script>
@@ -89,5 +118,10 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.app-btn {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

@@ -2,8 +2,8 @@
   <div>
     <form @submit.prevent>
       <h4>Create a post</h4>
-      <MyInput v-model="post.title" placeholder="Title" />
-      <MyInput v-model="post.body" placeholder="Description" />
+      <MyInput v-model.trim="post.title" placeholder="Title" />
+      <MyInput v-model.trim="post.body" placeholder="Description" />
       <MyButton @click="createPost">Add</MyButton>
     </form>
   </div>
