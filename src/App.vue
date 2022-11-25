@@ -5,7 +5,11 @@
   </nav>
   <router-view /> -->
   <div class="app">
-    <PostForm @create="createPost" />
+    <h1>Posts Page</h1>
+    <MyButton @click="showModal">Create a post</MyButton>
+    <MyModal v-model:isVisible="isModalVisible">
+      <PostForm @create="createPost" />
+    </MyModal>
     <PostList @delete="deletePost" :posts="posts" />
   </div>
 </template>
@@ -35,14 +39,19 @@ export default defineComponent({
           body: "TypeScript info",
         },
       ] as Post[],
+      isModalVisible: false,
     };
   },
   methods: {
     createPost(post: Post) {
       this.posts.push(post);
+      this.isModalVisible = false;
     },
     deletePost(i: number) {
       this.posts.splice(i, 1);
+    },
+    showModal() {
+      this.isModalVisible = true;
     },
   },
 });
