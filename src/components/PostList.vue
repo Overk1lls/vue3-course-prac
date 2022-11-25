@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="posts.length > 0">
     <h3>Posts List</h3>
     <PostItem
       v-for="(post, idx) in posts"
@@ -8,6 +8,7 @@
       @delete="deletePost(idx)"
     />
   </div>
+  <h2 v-else style="color: firebrick">There is nothing to show you...</h2>
 </template>
 
 <script lang="ts">
