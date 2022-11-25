@@ -24,22 +24,26 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+import { Post } from "@/models";
+
+export default defineComponent({
   data: () => ({
     post: {
       title: "",
       body: "",
     },
   }),
+  emits: ["create"],
   methods: {
     createPost() {
-      this.post.id = Date.now();
-      this.$emit("create", this.post);
+      const postWithId: Post = { ...this.post, id: Date.now() };
+      this.$emit("create", postWithId);
       this.post = {
         title: "",
         body: "",
       };
     },
   },
-};
+});
 </script>
