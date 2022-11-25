@@ -10,11 +10,13 @@
     <MyModal v-model:isVisible="isModalVisible">
       <PostForm @create="createPost" />
     </MyModal>
-    <PostList @delete="deletePost" :posts="posts" />
+    <PostList v-if="!isPostsLoading" @delete="deletePost" :posts="posts" />
+    <div v-else style="color: cornflowerblue">Loading...</div>
   </div>
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import { defineComponent } from "vue";
@@ -27,19 +29,9 @@ export default defineComponent({
   },
   data() {
     return {
-      posts: [
-        {
-          id: 1,
-          title: "JavaScript",
-          body: "JavaScript info",
-        },
-        {
-          id: 2,
-          title: "TypeScript",
-          body: "TypeScript info",
-        },
-      ] as Post[],
+      posts: [] as Post[],
       isModalVisible: false,
+      isPostsLoading: true,
     };
   },
   methods: {
@@ -53,6 +45,26 @@ export default defineComponent({
     showModal() {
       this.isModalVisible = true;
     },
+    async fetchPosts() {
+      try {
+        this.isPostsLoading = true;
+
+        setTimeout(async () => {
+          const { data } = await axios.get<Post[]>(
+            "https://jsonplaceholder.typicode.com/posts?_limit=10"
+          );
+
+          this.posts = data;
+        }, 1500);
+      } catch (error) {
+        alert("An error occurred");
+      } finally {
+        this.isPostsLoading = false;
+      }
+    },
+  },
+  mounted() {
+    this.fetchPosts();
   },
 });
 </script>
