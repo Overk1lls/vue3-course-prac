@@ -8,6 +8,7 @@
     <h1>Posts Page</h1>
     <div class="app-btn">
       <MyButton @click="showModal">Create a post</MyButton>
+      <MyInput v-model="searchQuery" placeholder="Find a post" />
       <MySelector v-model="selectedSort" :options="sortOptions" />
     </div>
     <MyModal v-model:isVisible="isModalVisible">
@@ -16,7 +17,7 @@
     <PostList
       v-if="!isPostsLoading"
       @delete="deletePost"
-      :posts="sortedPosts"
+      :posts="sortedAndFilteredPosts"
     />
     <div v-else style="color: cornflowerblue">Loading...</div>
   </div>
@@ -54,6 +55,7 @@ export default defineComponent({
           name: "By description",
         },
       ] as Options[],
+      searchQuery: "",
     };
   },
   methods: {
@@ -92,6 +94,13 @@ export default defineComponent({
         return a[this.selectedSort]
           .toString()
           .localeCompare(b[this.selectedSort].toString());
+      });
+    },
+    sortedAndFilteredPosts(): Post[] {
+      return this.sortedPosts.filter((post) => {
+        return post.title
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase());
       });
     },
   },
