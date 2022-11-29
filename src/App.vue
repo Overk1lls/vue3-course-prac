@@ -71,8 +71,8 @@ export default defineComponent({
       this.posts.push(post);
       this.isModalVisible = false;
     },
-    deletePost(i: number) {
-      this.posts.splice(i, 1);
+    deletePost(id: number) {
+      this.posts = this.posts.filter((post) => post.id !== id);
     },
     showModal() {
       this.isModalVisible = true;

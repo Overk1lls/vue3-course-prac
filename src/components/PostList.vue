@@ -3,10 +3,10 @@
     <h3>Posts List</h3>
     <TransitionGroup name="posts-list">
       <PostItem
-        v-for="(post, idx) in posts"
+        v-for="post in posts"
         :post="post"
         :key="post.id"
-        @delete="deletePost(idx)"
+        @delete="deletePost(post.id)"
       />
     </TransitionGroup>
   </div>
@@ -30,8 +30,8 @@ export default defineComponent({
   },
   emits: ["delete"],
   methods: {
-    deletePost(i: number) {
-      this.$emit("delete", i);
+    deletePost(id: number) {
+      this.$emit("delete", id);
     },
   },
 });

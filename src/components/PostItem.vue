@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="post">
+      <div>ID: {{ post.id }}</div>
       <div><strong>Title: </strong>{{ post.title }}</div>
       <div><strong>Description: </strong>{{ post.body }}</div>
     </div>
@@ -24,7 +25,7 @@ export default defineComponent({
   emits: ["delete"],
   methods: {
     deletePost() {
-      this.$emit("delete", this.post);
+      this.$emit("delete", this.post.id);
     },
   },
 });
