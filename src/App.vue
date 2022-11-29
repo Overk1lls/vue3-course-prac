@@ -20,30 +20,19 @@
       :posts="sortedAndFilteredPosts"
     />
     <div v-else style="color: cornflowerblue">Loading...</div>
-  </div>
-  <div class="pagination">
-    <div
-      v-for="page in pagination.totalPages"
-      :key="page"
-      class="page-num"
-      :class="{
-        'page-current': page === pagination.page,
-      }"
-      @click="changePage(page)"
-    >
-      {{ page }}
-    </div>
+    <div ref="observer" class="observer"></div>
   </div>
 </template>
 
 <script lang="ts">
+/* eslint-disable no-undef */
 import axios from "axios";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import { defineComponent } from "vue";
 import { Options, Pagination, Post } from "@/models";
 
-const totalPagesCountHeader = "x-total-count";
+const postsLimit = 100;
 
 export default defineComponent({
   components: {
@@ -74,7 +63,6 @@ export default defineComponent({
       pagination: {
         page: 1,
         limit: 10,
-        totalPages: 0,
       } as Pagination,
     };
   },
@@ -91,10 +79,12 @@ export default defineComponent({
     },
     async fetchPosts() {
       try {
-        this.isPostsLoading = true;
+        if (!this.isPostsLoading) {
+          this.pagination.page++;
+        }
         const { page, limit } = this.pagination;
 
-        const { data, headers } = await axios.get<Post[]>(
+        const { data } = await axios.get<Post[]>(
           "https://jsonplaceholder.typicode.com/posts",
           {
             params: {
@@ -103,24 +93,31 @@ export default defineComponent({
             },
           }
         );
-
-        this.posts = data;
-        this.pagination.totalPages = headers[totalPagesCountHeader]
-          ? Math.ceil(+headers[totalPagesCountHeader]! / limit)
-          : 1;
+        this.posts = [...this.posts, ...data];
       } catch (error) {
         alert("An error occurred");
       } finally {
-        this.isPostsLoading = false;
+        if (this.isPostsLoading) {
+          this.isPostsLoading = false;
+        }
       }
-    },
-    changePage(page: number) {
-      this.pagination.page = page;
-      this.fetchPosts();
     },
   },
   mounted() {
-    this.fetchPosts();
+    const options: IntersectionObserverInit = {
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    const callback: IntersectionObserverCallback = (entries) => {
+      const { page, limit } = this.pagination;
+      if (entries[0].isIntersecting && page < Math.ceil(postsLimit / limit)) {
+        this.fetchPosts();
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+
+    const ref = this.$refs.observer as HTMLDivElement;
+    observer.observe(ref);
   },
   computed: {
     sortedPosts(): Post[] {
@@ -168,21 +165,5 @@ nav a.router-link-exact-active {
 .app-btn {
   display: flex;
   justify-content: space-between;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-.page-num {
-  border: 1px solid black;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.page-current {
-  border: 2px solid teal;
 }
 </style>
