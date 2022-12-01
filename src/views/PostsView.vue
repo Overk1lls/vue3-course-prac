@@ -4,6 +4,7 @@
     <div class="app-btn">
       <MyButton @click="showModal">Create a post</MyButton>
       <MyInput
+        v-focus
         :model-value="searchQuery"
         @update:model-value="setSearchQuery"
         placeholder="Find a post"
@@ -22,8 +23,12 @@
       @delete="deletePost"
       :posts="sortedAndFilteredPosts"
     />
-    <div v-else style="color: cornflowerblue">Loading...</div>
-    <div ref="observer" class="observer"></div>
+    <div v-else class="loading">Loading...</div>
+    <div
+      v-intersection:[pagination]="fetchPosts"
+      ref="observer"
+      class="observer"
+    ></div>
   </div>
 </template>
 
@@ -35,8 +40,6 @@ import { defineComponent } from "vue";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { useStore, PostState } from "@/store";
 import { Options, Pagination, Post } from "@/models";
-
-const postsLimit = 100;
 
 export default defineComponent({
   setup() {
@@ -75,21 +78,6 @@ export default defineComponent({
       this.isModalVisible = true;
     },
   },
-  mounted() {
-    const options: IntersectionObserverInit = {
-      rootMargin: "0px",
-      threshold: 1.0,
-    };
-    const callback: IntersectionObserverCallback = (entries) => {
-      const { page, limit } = this.pagination;
-      if (entries[0].isIntersecting && page < Math.ceil(postsLimit / limit)) {
-        this.fetchPosts();
-      }
-    };
-    const observer = new IntersectionObserver(callback, options);
-    const ref = this.$refs.observer as HTMLDivElement;
-    observer.observe(ref);
-  },
   computed: {
     posts(): Post[] {
       return this.postsModule.posts;
@@ -121,5 +109,15 @@ export default defineComponent({
 .app-btn {
   display: flex;
   justify-content: space-between;
+}
+
+.loading {
+  font-weight: 900;
+  padding-top: 30px;
+  color: cornflowerblue;
+}
+
+.observer {
+  height: 30px;
 }
 </style>
