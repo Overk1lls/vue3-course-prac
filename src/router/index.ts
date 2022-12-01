@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import PostView from "../views/PostView.vue";
+import HomeView from "@/views/HomeView.vue";
+import PostsView from "@/views/PostsView.vue";
+import PostView from "@/views/PostView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/posts",
     name: "posts",
+    component: PostsView,
+  },
+  {
+    path: "/posts/:id",
+    name: "post",
     component: PostView,
   },
 ];
