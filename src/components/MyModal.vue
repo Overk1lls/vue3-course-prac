@@ -8,20 +8,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import toggleMixin from "@/mixins/toggle.mixin";
 
 export default defineComponent({
   name: "MyModal",
-  props: {
-    isVisible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    hide() {
-      this.$emit("update:isVisible", false);
-    },
-  },
+  mixins: [toggleMixin],
 });
 </script>
 
