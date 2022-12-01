@@ -36,17 +36,36 @@
 /* eslint-disable no-undef */
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
+import { usePosts, useSortedPosts, useSortedAndFilteredPosts } from "@/hooks";
 import { defineComponent } from "vue";
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import { useStore, PostState } from "@/store";
-import { Options, Pagination, Post } from "@/models";
+import { mapActions, mapMutations } from "vuex";
+import { Post } from "@/models";
 
 export default defineComponent({
   setup() {
-    const store = useStore();
+    const {
+      posts,
+      isPostLoading,
+      sortOptions,
+      searchQuery,
+      pagination,
+      deletePost,
+      createPost: storePost,
+    } = usePosts();
+    const { selectedSort, sortedPosts } = useSortedPosts();
+    const { sortedAndFilteredPosts } = useSortedAndFilteredPosts();
 
     return {
-      postsModule: store.state.posts as PostState,
+      posts,
+      isPostLoading,
+      selectedSort,
+      sortedPosts,
+      sortedAndFilteredPosts,
+      sortOptions,
+      searchQuery,
+      pagination,
+      deletePost,
+      storePost,
     };
   },
   components: {
@@ -68,39 +87,12 @@ export default defineComponent({
       fetchPosts: "posts/fetchPosts",
     }),
     createPost(post: Post) {
-      this.posts.push(post);
+      this.storePost(post);
       this.isModalVisible = false;
-    },
-    deletePost(id: number) {
-      this.postsModule.posts = this.posts.filter((post) => post.id !== id);
     },
     showModal() {
       this.isModalVisible = true;
     },
-  },
-  computed: {
-    posts(): Post[] {
-      return this.postsModule.posts;
-    },
-    selectedSort(): string {
-      return this.postsModule.selectedSort;
-    },
-    sortOptions(): Options[] {
-      return this.postsModule.sortOptions;
-    },
-    searchQuery(): string {
-      return this.postsModule.postSearchQuery;
-    },
-    isPostLoading(): boolean {
-      return this.postsModule.isPostLoading;
-    },
-    pagination(): Pagination {
-      return this.postsModule.pagination;
-    },
-    ...mapGetters({
-      sortedPosts: "posts/sortedPosts",
-      sortedAndFilteredPosts: "posts/sortedAndFilteredPosts",
-    }),
   },
 });
 </script>
